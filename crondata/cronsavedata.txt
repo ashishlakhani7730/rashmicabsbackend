@@ -1,0 +1,124 @@
+
+ DATETIME - 2018-11-02 14:55:06DELETE ID FROM oneway_offer_detail table id is -36
+
+ DATETIME - 2018-11-03 11:30:01DELETE ID FROM oneway_offer_detail table id is -49
+
+ DATETIME - 2018-11-03 11:30:01DELETE ID FROM oneway_offer_detail table id is -50
+
+ DATETIME - 2018-11-04 11:30:01DELETE ID FROM oneway_offer_detail table id is -54
+
+ DATETIME - 2018-11-05 12:30:01DELETE ID FROM oneway_offer_detail table id is -55
+
+ DATETIME - 2018-11-18 12:30:05DELETE ID FROM oneway_offer_detail table id is -64
+
+ DATETIME - 2018-11-21 12:30:03DELETE ID FROM oneway_offer_detail table id is -45
+
+ DATETIME - 2018-11-22 12:30:03DELETE ID FROM oneway_offer_detail table id is -53
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -67
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -70
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -71
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -74
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -75
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -76
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -77
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -78
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -79
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -80
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -81
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -82
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -83
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -85
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -86
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -87
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -88
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -89
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -90
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -91
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -92
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -93
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -94
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -95
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -96
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -97
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -98
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -99
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -100
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -101
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -102
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -103
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -104
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -105
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -106
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -107
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -108
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -109
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -110
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -111
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -112
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -113
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -114
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -116
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -117
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -118
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -119
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -120
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -121
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -122
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -123
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -124
+
+ DATETIME - 2018-12-01 12:30:04DELETE ID FROM oneway_offer_detail table id is -125
+
+ DATETIME - 2018-12-28 12:30:04DELETE ID FROM oneway_offer_detail table id is -135

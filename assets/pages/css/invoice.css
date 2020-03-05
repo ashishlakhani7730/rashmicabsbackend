@@ -1,0 +1,78 @@
+/***
+Invoice page
+***/
+@import url('https://fonts.googleapis.com/css?family=Saira+Semi+Condensed');
+.invoice table {
+  margin: 30px 0 30px;
+  background:#fff;
+  font-family: 'Saira Semi Condensed', sans-serif !important;
+}
+
+.invoice .invoice-logo {
+  margin-bottom: 20px;
+}
+
+.invoice .invoice-logo p {
+  padding: 5px 0;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: right;
+}
+
+.invoice .invoice-logo p span {
+  display: block;
+  font-size: 12px;
+}
+
+.invoice .invoice-logo-space {
+  margin-bottom: 0px;
+}
+
+.invoice .invoice-payment strong {
+  margin-right: 5px;
+}
+
+.invoice .invoice-block {
+  text-align: right;
+}
+
+.invoice .invoice-block .amounts {
+  margin-top: 20px;
+  font-size: 12px;
+}
+
+page[size="A4"] {
+  background: white;
+  width: 21cm;
+  height: 29.7cm;
+  display: block;
+  margin: 0px auto;
+  margin-bottom: 0.5cm;
+  padding:10px;
+  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+  
+}
+
+.table td, .table th {
+    font-size:11px !important;
+	border:none !important;
+}
+
+@media print {
+  body, page[size="A4"] {
+    margin: 0;
+    box-shadow: 0;
+	-webkit-print-color-adjust: exact !important;
+  }
+
+.inotes{
+
+font-size:10px !important;
+}
+.darkrow{
+background:#FFBF12;
+color:#fff;
+font-weight:700;
+}
+
+

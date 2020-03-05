@@ -1,0 +1,66 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2019-06-08 05:17:48 --> 404 Page Not Found: Assets/global
+ERROR - 2019-06-08 05:17:51 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 05:17:51 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 05:17:51 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 05:17:54 --> 404 Page Not Found: Faviconico/index
+ERROR - 2019-06-08 05:35:17 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 05:35:17 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 05:35:20 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 05:35:20 --> 404 Page Not Found: Faviconico/index
+ERROR - 2019-06-08 05:38:33 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 05:38:33 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 05:38:33 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 05:38:33 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 05:38:33 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 05:52:06 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 05:52:06 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 05:52:07 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:30:43 --> 404 Page Not Found: Assets/global
+ERROR - 2019-06-08 11:30:48 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 11:30:48 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:30:48 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:30:49 --> 404 Page Not Found: Faviconico/index
+ERROR - 2019-06-08 11:46:56 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 11:46:56 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:46:56 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:46:57 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:47:02 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:47:02 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:47:02 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 11:47:02 --> 404 Page Not Found: Ssets/global
+ERROR - 2019-06-08 11:47:02 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:47:02 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:47:03 --> 404 Page Not Found: Ssets/global
+ERROR - 2019-06-08 11:48:54 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:48:54 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:48:54 --> 404 Page Not Found: Ssets/global
+ERROR - 2019-06-08 11:48:55 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 11:48:55 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:48:55 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:48:55 --> 404 Page Not Found: Ssets/global
+ERROR - 2019-06-08 11:49:02 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:49:02 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 11:49:02 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:49:04 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:49:04 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:49:06 --> 404 Page Not Found: Agent_vehicle_management/favicon.ico
+ERROR - 2019-06-08 11:49:12 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 11:49:12 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:49:12 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:49:12 --> 404 Page Not Found: Ssets/global
+ERROR - 2019-06-08 11:49:18 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 11:49:18 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:49:18 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:58:59 --> Severity: Notice --> Trying to get property of non-object /var/www/webroot/ROOT/app.rashmicabs.com/application/views/manage_package.php 96
+ERROR - 2019-06-08 11:58:59 --> Severity: Notice --> Trying to get property of non-object /var/www/webroot/ROOT/app.rashmicabs.com/application/views/manage_package.php 96
+ERROR - 2019-06-08 11:58:59 --> Severity: Notice --> Trying to get property of non-object /var/www/webroot/ROOT/app.rashmicabs.com/application/views/manage_package.php 96
+ERROR - 2019-06-08 11:59:03 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 11:59:03 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 11:59:03 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 11:59:03 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 12:31:59 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js
+ERROR - 2019-06-08 12:31:59 --> 404 Page Not Found: Js/jquery.min.js
+ERROR - 2019-06-08 12:31:59 --> 404 Page Not Found: Js/bootstrap.min.js
+ERROR - 2019-06-08 12:31:59 --> 404 Page Not Found: Js/bootstrap-timepicker.min.js

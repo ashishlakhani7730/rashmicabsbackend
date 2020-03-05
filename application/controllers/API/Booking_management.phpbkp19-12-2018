@@ -1,0 +1,1631 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
+
+define('BACKUP_DIR', './uploads/invoice' ) ;
+
+
+
+class Booking_management extends CI_Controller 
+
+{
+
+	
+
+	function __construct()
+
+    {
+
+        parent::__construct();
+
+        $this->load->model('General_data');
+
+	    $this->load->model('Sms_email');
+
+	}
+
+	
+
+	 
+
+	
+
+	
+
+	public function from_city_list(){
+
+		$city_list = $this->db->get('city_detail')->result();
+
+		
+
+		$data=array();
+
+		$i=1;
+
+		$total=0;
+
+		foreach($city_list as $i =>$row){
+
+			$data[$i]=$row;
+
+			
+
+			//$total=$i;
+
+			
+
+			//$i++;
+
+		}
+
+		
+
+		$response=array('success'=>'success' ,'message'=>'Successfully Found From City List','total'=>count($data), 'from_city_list'=>$data);
+
+		
+
+		echo json_encode($response);
+
+	}
+
+	
+
+	public function payment_type_list(){
+
+		$payment_type = $this->db->get('payment_type')->result();
+
+		
+
+		$data=array();
+
+		$i=1;
+
+		$total=0;
+
+		foreach($payment_type as $i => $row){
+
+			$data[$i]=$row;
+
+			
+
+			//$total=$i;
+
+			
+
+			//$i++;
+
+		}
+
+		
+
+		$response=array('success'=>'success' ,'message'=>'Successfully Found Payment Type List','total'=>count($data), 'payment_type_list'=>$data);
+
+		
+
+		echo json_encode($response);
+
+	}
+
+	
+
+	
+
+	public function booking_list(){
+
+	
+
+		date_default_timezone_set('Asia/Kolkata');
+
+		
+
+		if(isset($_POST['id'])){
+
+		
+
+			$data=array();
+			
+		    $data2=array();
+
+			$i=1;
+
+			$total=0;
+
+			
+
+			$this->db->select('booking_list.*,package_type.package_sub_type,package_type.package_type,city_detail.c_name,payment_type.payment_name');
+
+			$this->db->from('booking_list');
+
+			$this->db->join('package_type','package_type.id=booking_list.b_type');
+
+			$this->db->join('city_detail','city_detail.id=booking_list.b_from_city');
+
+			$this->db->join('payment_type','payment_type.id=booking_list.b_payment_type');
+
+			$this->db->where('booking_list.b_p_id',$_POST['id']);
+
+			$this->db->order_by('booking_list.b_from_date','DESC');
+			
+			$this->db->order_by('booking_list.b_from_time','ASC');
+
+			$booking__list = $this->db->get()->result();
+
+			foreach($booking__list as $i => $b){
+
+			
+
+				$data[$i]=$b;
+
+				$data[$i]->b_route = $b->c_name;
+
+				if(($b->b_type == '3') || ($b->b_type == '4'))
+
+				{
+
+				    $data[$i]->b_route = $b->c_name." - ".$b->b_to_city;
+
+				}
+
+				
+
+				if($b->b_type == '1' || $b->b_type == '2')
+
+				{
+
+				    $to_city = $this->db->get_where('city_detail',array('id'=>$b->b_to_city))->row()->c_name;
+
+					$data[$i]->b_route = $b->c_name." - ".$to_city;
+
+				}
+				
+				$vehicle_category=$this->db->get_where('vehicle_category_detail',array('id'=>$b->b_vc_id))->row();
+				
+				$data[$i]->vehicle_cat = '';
+				if($vehicle_category){
+					$data[$i]->vehicle_cat = $vehicle_category->category_name;	
+				}	
+				
+				$description = $this->db->get_where('vehicle_category_detail',array('id'=>$b->b_vc_id))->row()->description;
+				$data[$i]->description='';
+				
+				if($description){
+					$data[$i]->description = $description;
+				}
+				
+				$vehicle_type = $this->db->get_where('vehicle_detail',array('v_category_id'=>$b->b_vc_id))->row();
+				$data[$i]->vehicle_type='';
+				
+				if($vehicle_type){
+					$data[$i]->vehicle_type = $vehicle_type->v_name;
+				}
+				
+				$rent_card = $this->db->get_where('rent_cards',array('id'=>$b->b_rent_card_id))->row();
+				$data[$i]->rent_card=array();
+				
+				if(!empty($rent_card)){
+					$data[$i]->rent_card=$rent_card;
+				}
+
+				
+
+				if($b->b_invoice_id!=0)
+
+				{
+
+					$invoice = $this->db->get_where('invoice',array('id'=>$b->b_invoice_id))->row();
+
+					$data[$i]->invoice_detail = $invoice;
+
+				}
+
+				else
+
+				{
+
+					$data[$i]->invoice_detail = "";
+
+					
+
+				}
+
+				
+
+				$data[$i]->isrequest = "0";
+
+				//$total=$i;
+
+				//$i++;
+
+				
+
+			}
+			
+			//added by ashish 30-10-2018.
+			//start oneway offer booking request list.
+			
+			$this->db->select('booking_request_list.*,package_type.package_sub_type,package_type.package_type,city_detail.c_name,payment_type.payment_name');
+
+			$this->db->from('booking_request_list');
+			
+			$this->db->join('package_type','package_type.id=booking_request_list.b_type');
+			
+			$this->db->join('city_detail','city_detail.id=booking_request_list.b_from_city');
+			
+			$this->db->join('payment_type','payment_type.id=booking_request_list.b_payment_type');
+
+			$this->db->where('package_type.id',1);
+			
+			$this->db->where('booking_request_list.b_p_id',$_POST['id']);
+			
+			$this->db->where('(booking_request_list.b_from_date >= CURDATE())');
+			
+			$this->db->where('(booking_request_list.b_status != 1)');
+			
+			$this->db->order_by('booking_request_list.id','DESC');
+			
+			$query = $this->db->get();
+			
+			if ($query->num_rows()) {
+				foreach($query->result() as $i => $b){
+
+					$data2[$i]=$b;
+
+					$data2[$i]->b_route = $b->c_name;
+
+					if(($b->b_type == '3') || ($b->b_type == '4'))
+
+					{
+
+						$data2[$i]->b_route = $b->c_name." - ".$b->b_to_city;
+
+					}
+
+					
+
+					if($b->b_type == '1' || $b->b_type == '2')
+
+					{
+
+						$to_city = $this->db->get_where('city_detail',array('id'=>$b->b_to_city))->row()->c_name;
+
+						$data2[$i]->b_route = $b->c_name." - ".$to_city;
+
+					}
+					
+					$vehicle_category=$this->db->get_where('vehicle_category_detail',array('id'=>$b->b_vc_id))->row();
+					
+					$data2[$i]->vehicle_cat = '';
+					if($vehicle_category){
+						$data2[$i]->vehicle_cat = $vehicle_category->category_name;	
+					}	
+					
+					$description = $this->db->get_where('vehicle_category_detail',array('id'=>$b->b_vc_id))->row()->description;
+					$data2[$i]->description='';
+				
+					if($description){
+						$data2[$i]->description = $description->description;
+					}
+					
+					$vehicle_type = $this->db->get_where('vehicle_detail',array('v_category_id'=>$b->b_vc_id))->row();
+					$data2[$i]->vehicle_type='';
+					
+					if($vehicle_type){
+						$data2[$i]->vehicle_type = $vehicle_type->v_name;
+					}
+					
+					$rent_card = $this->db->get_where('rent_cards',array('id'=>$b->b_rent_card_id))->row();
+					$data2[$i]->rent_card=array();
+					
+					if(!empty($rent_card)){
+						$data2[$i]->rent_card=$rent_card;
+					}
+
+					
+
+					if($b->b_invoice_id!=0)
+
+					{
+
+						$invoice = $this->db->get_where('invoice',array('id'=>$b->b_invoice_id))->row();
+
+						$data2[$i]->invoice_detail = $invoice;
+
+					}
+
+					else
+
+					{
+
+						$data2[$i]->invoice_detail = "";
+
+						
+
+					}
+
+					
+
+					$data2[$i]->isrequest = "1";
+
+					//$total=$i;
+
+					//$i++;
+
+				
+
+				}
+			}
+			//end oneway offer booking request list.
+
+            
+			$response=array('success'=>'success' ,'message'=>'Successfully Get Booking List','total'=>count($data), 'booking_list'=>array_merge($data,$data2));
+
+			
+
+		}else{
+
+			$response=array('success'=>'error','message'=>'Parameter Missing');
+
+		}
+
+		echo json_encode($response);
+
+	}
+
+	
+
+	public function booking_details(){
+
+		date_default_timezone_set('Asia/Kolkata');
+
+		
+
+		if(isset($_POST['booking_id'])){
+
+		
+
+			
+
+			
+
+			$this->db->select('booking_list.*,package_type.package_sub_type,package_type.package_type,city_detail.c_name,payment_type.payment_name');
+
+			$this->db->from('booking_list');
+
+			$this->db->join('package_type','package_type.id=booking_list.b_type');
+
+			$this->db->join('city_detail','city_detail.id=booking_list.b_from_city');
+
+			$this->db->join('payment_type','payment_type.id=booking_list.b_payment_type');
+
+			$this->db->where('booking_list.id',$_POST['booking_id']);
+
+			$b = $this->db->get()->row();
+
+			
+
+			$data=$b;
+
+			$data->b_route = $b->c_name;
+
+			if(($b->b_type == '3') || ($b->b_type == '4'))
+
+			{
+
+			    $data->b_route = $b->c_name." - ".$b->b_to_city;
+
+			}
+
+				
+
+			if($b->b_type == '1' || $b->b_type == '2')
+
+			{
+
+			    $to_city = $this->db->get_where('city_detail',array('id'=>$b->b_to_city))->row()->c_name;
+
+				$data->b_route = $b->c_name." - ".$to_city;
+
+			}
+			
+			$vehicle_category=$this->db->get_where('vehicle_category_detail',array('id'=>$b->b_vc_id))->row();
+				
+			$data->vehicle_cat = '';
+			if($vehicle_category){
+				$data->vehicle_cat = $vehicle_category->category_name;	
+			}	
+				
+			$vehicle_type = $this->db->get_where('vehicle_detail',array('v_category_id'=>$b->b_vc_id))->row();
+			$data->vehicle_type='';
+				
+			if($vehicle_type){
+				$data->vehicle_type = $vehicle_type->v_name;
+			}
+			
+			$rent_card = $this->db->get_where('rent_cards',array('id'=>$b->b_rent_card_id))->row();
+			$data->rent_card=array();
+			
+			if(!empty($rent_card)){
+				$data->rent_card=$rent_card;
+			}
+
+				
+
+			if($b->b_invoice_id!=0)
+
+			{
+
+				$invoice = $this->db->get_where('invoice',array('id'=>$b->b_invoice_id))->row();
+
+				$data->invoice_detail = $invoice;
+
+				
+
+				$invoice_data=array();
+
+				
+
+				if($invoice->type=="LOCAL" || $invoice->sub_type=="ONEWAY") {
+
+					$min_km = $invoice->min_km;
+
+					$invoice_data['minimum_km_name']="MINIMUM KM (".$min_km." Km)"; 
+
+					$min_km_rate = $invoice->base_price; 
+
+				}else{
+
+					$min_km = $invoice->min_km * $invoice->total_days;
+
+					$invoice_data['minimum_km_name']="MINIMUM KM (".number_format($min_km)." x ".$invoice->rate_per_km." Km)"; 
+
+					$min_km_rate = ($invoice->min_km * $invoice->total_days) * $invoice->rate_per_km; 
+
+					//echo number_format($min_km_rate);
+
+				}
+
+				
+
+				 
+
+				$invoice_data['minimum_km_value'] = number_format($min_km_rate);
+
+				
+
+				if($min_km < $invoice->extra_km) {
+
+					$extra_km = $invoice->extra_km - $min_km;
+
+					$invoice_data['extra_km_name']="EXTRA KM (".$extra_km." x ".$invoice->rate_per_km.")";
+
+					$extra_km_rate = $extra_km * $invoice->rate_per_km;
+
+					$invoice_data['extra_km_value']=number_format($extra_km_rate);
+
+				}else{
+
+					$invoice_data['extra_km_name']="EXTRA KM";
+
+					$extra_km_rate = 0;
+
+					$invoice_data['extra_km_value']='N/A';
+
+				}
+
+				
+
+					
+
+				if(($invoice->type=="LOCAL" || $invoice->sub_type=="ONEWAY" || $invoice->sub_type=="ONEWAY OFFER") && $invoice->min_hr < $invoice->extra_hr) {
+
+					$extra_hr = $invoice->extra_hr - $invoice->min_hr;
+
+					$invoice_data['extra_hour_name']="EXTRA HOUR (".$extra_hr." x ".$invoice->rate_per_hr.")";
+
+					$extra_hr_rate = $extra_hr * $invoice->rate_per_hr; 
+
+					$invoice_data['extra_hour_value'] = number_format($extra_hr_rate);
+
+				} else { 
+
+					
+
+					$invoice_data['extra_hour_name']="EXTRA HOUR ";
+
+					$extra_hr_rate = 0;
+
+					$invoice_data['extra_hour_value'] = number_format($extra_hr_rate); 
+
+				
+
+				} 
+
+				
+
+				if($invoice->type=="LOCAL" || $invoice->sub_type=="ONEWAY") {
+
+					$invoice_data['driver_allowance_name']="DRIVER ALLOWANCE";
+
+					$driver_allow = $invoice->driver_allowance=0; 
+
+					$invoice_data['driver_allowance_value'] = "N/A";
+
+				}else{
+
+					$invoice_data['driver_allowance_name']="DRIVER ALLOWANCE";
+
+					if($invoice->driver_allowance !=0) { 
+
+						$driver_allow = $invoice->driver_allowance * $invoice->total_days; 
+
+						$invoice_data['driver_allowance_value'] = number_format($driver_allow);
+
+					} else { 
+
+						$driver_allow = $invoice->driver_allowance=0; 
+
+						$invoice_data['driver_allowance_value'] = "N/A";
+
+					}
+
+				}
+
+				
+
+				
+
+				
+
+				$night_charge_name ="NIGHT CHARGE";
+
+				
+
+				if($invoice->night_charge!=0 && $invoice->drop_night_charge != 0) {
+
+					$night_charge_name .= "( PICKUP + DROP )";
+
+				}else if($invoice->night_charge!=0){
+
+					$night_charge_name .= "( PICKUP )";
+
+				}else if($invoice->drop_night_charge!=0){
+
+					$night_charge_name .= "( DROP )";
+
+				}
+
+				$invoice_data['night_charge_name']=$night_charge_name;
+
+				
+
+				if($night_charge = $invoice->night_charge==0 && $invoice->drop_night_charge == 0) {
+
+					 $invoice_data['night_charge_value']="N/A"; 
+
+					 $night_charge=0;$drop_night_charge=0;
+
+				} else {
+
+					$night_charge = $invoice->night_charge;  
+
+					$drop_night_charge = $invoice->drop_night_charge; 
+
+					$invoice_data['night_charge_value']= $invoice->night_charge+$invoice->drop_night_charge; 
+
+				}
+
+				
+
+				$invoice_data['other_charge_name']="OTHER CHARGE".$invoice->other_charge;
+
+				if($invoice->other_charge !=0){ 
+
+					$other_charge = $invoice->other_charge; 
+
+					$invoice_data['other_charge_value']=$other_charge;
+
+				}else{ 
+
+					$other_charge = $invoice->other_charge = 0 ; 
+
+					$invoice_data['other_charge_value']='N/A';
+
+				}
+
+				
+
+				$invoice_data['discount_name']="Discount";
+
+				if($invoice->discount!=0){ 
+
+					$invoice_data['discount_value'] = $invoice->discount;
+
+				} else { 
+
+					$invoice_data['discount_value'] =  "N/A"; 
+
+					$invoice->discount=0; 
+
+				}
+
+				
+
+				$tax_value = explode(',',$invoice->tax_value);
+
+				$tax_percentage = explode(',',$invoice->tax_percentage);
+
+				$tax_name = explode(',',$invoice->tax_name); 
+
+			
+
+				
+
+				if($invoice->tax_name != "" || $invoice->tax_name != 0 )
+
+				{
+
+					$j=1;
+
+					$invoice_data['tot_tax']=count($tax_value);
+
+					for($i=0; $i<sizeof($tax_value); $i++) 
+
+					{
+
+						$invoice_data['tax'][$j]['tax_name'] = $tax_name[$i]."  ".round($tax_percentage[$i],2)."%";
+
+						$invoice_data['tax'][$j]['tax_value'] = round($tax_value[$i],2);
+
+						$j++;
+
+					}  
+
+				}
+
+				
+
+				$invoice_data['total_base_fare_name']="TOTAL BASE FARE";
+
+				
+
+				$tax_value = explode(',',$invoice->tax_value);
+
+				$i=0;
+
+				foreach($tax_value as $tv)
+
+				{
+
+					$i = $i + $tv;
+
+				}
+
+									 
+
+				$fare_amount =  $min_km_rate + $extra_km_rate + $extra_hr_rate - $invoice->discount	+ $i + $drop_night_charge + $driver_allow + $night_charge + $other_charge;
+
+				$invoice_data['total_base_fare_value']=number_format($fare_amount);	 
+
+				
+
+				$invoice_data['toll_charge_name']="TOLL CHARGE";
+
+				if($toll_charge = $invoice->toll_charge==0) {
+
+					$invoice_data['toll_charge_value']= "N/A";
+
+					$toll_charge=0;
+
+				} else {
+
+					$toll_charge = $invoice->toll_charge;
+
+					$invoice_data['toll_charge_value']=$invoice->toll_charge;
+
+				}
+
+				
+
+				$invoice_data['parking_charge_name']="PARKING CHARGE";
+
+				if($parking_charge = $invoice->parking_charge==0) {
+
+					$invoice_data['parking_charge_value']= "N/A";
+
+					$parking_charge=0;
+
+				} else {
+
+					$parking_charge = $invoice->parking_charge;
+
+					$invoice_data['parking_charge_value']=$parking_charge;
+
+				}
+
+				
+
+				$invoice_data['border_tax_name']="BORDER TAX ";
+
+				if($invoice->border_tax !=0){ 
+
+					$border_tax = $invoice->border_tax ; 
+
+					$invoice_data['border_tax_value']=$border_tax;
+
+				} else {
+
+					$border_tax = $invoice->border_tax ; 
+
+					$invoice_data['border_tax_value']='N/A';
+
+				} 
+
+				
+
+				$invoice_data['total_other_charage_name']="TOTAL OTHER CHARGES";
+
+				
+
+				$other_charges =  $toll_charge +  $parking_charge + $border_tax ; 
+
+				$invoice_data['total_other_charage_value'] = number_format($other_charges);
+
+				
+
+				$grand_total = $fare_amount+$other_charges;
+
+				$invoice_data['grand_total']= number_format($grand_total);
+
+				
+
+				$invoice_data['advance']= 0;
+
+				if( ($invoice->advance_pay + round($invoice->paid_amount,2))!=$grand_total) { 
+
+					$advanced = $invoice->advance_pay + round($invoice->paid_amount,2); 
+
+					$invoice_data['advance']=  number_format($advanced);
+
+				}
+
+				
+
+				$advanced = $invoice->advance_pay + round($invoice->paid_amount,2);
+
+				
+
+				$invoice_data['total_due']= 0;
+
+				$invoice_data['extra_discount']= 0;
+
+				if($grand_total-$advanced) { 
+
+					if($invoice->balance != 0) {
+
+						$invoice_data['total_due']= number_format($grand_total-$advanced); 
+
+					} else { 
+
+				 		$invoice_data['extra_discount']=number_format($grand_total-$advanced); 
+
+					}	
+
+				}
+
+				$data->invoice_data=$invoice_data;
+
+				
+
+				
+
+			}
+
+			else
+
+			{
+
+				$data->invoice_detail = "";
+
+				$data->invoice_data = "";
+
+				
+
+			}
+
+				
+
+			$response=array('success'=>'success' ,'message'=>'Successfully Get Booking Details', 'booking_details'=>$data);
+
+		}else{
+
+			$response=array('success'=>'error','message'=>'Parameter Missing');
+
+		}
+
+		echo json_encode($response);
+
+	}
+
+	
+	// not used this code
+	public function update_booking()
+
+	{
+
+		date_default_timezone_set('Asia/Kolkata');
+
+		$data=$this->input->post(null,true);
+
+		
+
+		if(!isset($data['b_to_date']))
+
+		{
+
+			$data['b_to_date'] = "0000-00-00";
+
+		}
+
+		else
+
+		{
+
+		    	$data['b_to_date'] = date('Y-m-d',strtotime($data['b_to_date']));
+
+		}
+
+
+
+		//echo $data['date']."<br>";
+
+	
+
+		$array= array(
+
+			'b_p_name' =>$data['b_p_name'],
+
+			'b_p_contact'=>$data['b_p_contact'],
+
+			'b_self_travel_status'=>$data['b_self_travel_status'],
+
+			'b_pickup_point'=>$data['b_pickup_point'],
+
+			'b_drop_point' =>$data['b_drop_point'],
+
+			'b_from_date' =>date('Y-m-d',strtotime($data['b_from_date'])),
+
+			'b_from_time' =>date('H:i:s',strtotime($data['b_from_time'])),
+
+			'b_to_date' =>	$data['b_to_date'] ,
+
+			'b_updated_date_time'=>date('Y-m-d H:i:s')
+
+		);
+
+		
+
+		//print_r($array);
+
+		
+
+		$this->db->where('id',$data['booking_id']);
+
+		$this->db->update('booking_list',$array);
+
+		
+
+		$response['success']="success";
+
+		
+
+		echo json_encode($response);
+
+		
+
+	}
+	
+	/*
+	//added by ashish -31-10-18
+	public function update_booking()
+
+	{
+
+		date_default_timezone_set('Asia/Kolkata');
+
+		$data=$this->input->post(null,true);
+		
+		if(!isset($data['b_to_date']))
+
+		{
+
+			$data['b_to_date'] = "0000-00-00";
+
+		}
+
+		else
+
+		{
+
+		    	$data['b_to_date'] = date('Y-m-d',strtotime($data['b_to_date']));
+
+		}
+		
+		$arraydata= array(
+
+			'b_p_name' =>$data['b_p_name'],
+
+			'b_p_contact'=>$data['b_p_contact'],
+
+			'b_self_travel_status'=>$data['b_self_travel_status'],
+
+			'b_pickup_point'=>$data['b_pickup_point'],
+
+			'b_drop_point' =>$data['b_drop_point'],
+
+			'b_from_time' =>date('H:i:s',strtotime($data['b_from_time'])),
+			
+			'b_to_date' =>	$data['b_to_date'] ,
+
+			'b_updated_date_time'=>date('Y-m-d H:i:s')
+
+		);
+		
+		if($data['isrequest'] == 1)
+		{
+				$trip_start_time = date('H:i:s',strtotime($data['b_from_time']));
+				
+				$this->db->select("b_oo_valid_from_time,b_oo_valid_to_time");
+				$this->db->from("booking_request_list");
+				$this->db->where("id", $data['booking_id']);
+				$this->db->where("(b_oo_valid_from_time <= '$trip_start_time' AND b_oo_valid_to_time >= '$trip_start_time')");
+
+			
+				$query = $this->db->get();
+				$ids = $query->result();
+			
+				if(empty($ids))
+				{
+					$this->db->reset_query();
+					$this->db->select("b_oo_valid_from_time,b_oo_valid_to_time");
+					$this->db->from("booking_request_list");
+					$this->db->where("id", $data['booking_id']);
+					
+					$query2 = $this->db->get();
+					$ids2 = $query2->row_array();
+					
+					$res = array("success" => "Please Select Trip Start Time Between ".date('h:i A',strtotime($ids2['b_oo_valid_from_time']))." TO ".date('h:i A',strtotime($ids2['b_oo_valid_to_time'])));
+					echo json_encode($res);
+					exit();
+				}
+				
+				$this->db->where('id',$data['booking_id']);
+
+				$this->db->update('booking_request_list',$arraydata);
+
+		
+
+				$response['success']="success";
+		}
+		else if($data['isrequest'] == 0)
+		{
+			$this->db->select("booking_list.id")->from("booking_list")->join("booking_request_list","booking_list.b_id = booking_request_list.b_id");
+			$query1 = $this->db->get();
+			$ids1 = $query1->result();
+			
+			//$array = json_decode(json_encode($ids1), true);
+			
+			foreach ($ids1 as $value) 
+				$array[] = $value->id;
+		
+			if(in_array($data['booking_id'], $array))
+			{
+				$trip_start_time = date('H:i:s',strtotime($data['b_from_time']));
+				
+				$this->db->select("b_oo_valid_from_time,b_oo_valid_to_time");
+				$this->db->from("booking_list");
+				$this->db->where("id", $data['booking_id']);
+				$this->db->where("(b_oo_valid_from_time <= '$trip_start_time' AND b_oo_valid_to_time >= '$trip_start_time')");
+
+			
+				$query = $this->db->get();
+				$ids = $query->result();
+				$response['query'] = $this->db->last_query();
+				if(empty($ids))
+				{
+					$this->db->reset_query();
+					$this->db->select("b_oo_valid_from_time,b_oo_valid_to_time");
+					$this->db->from("booking_list");
+					$this->db->where("id", $data['booking_id']);
+					
+					$query2 = $this->db->get();
+					$ids2 = $query2->row_array();
+					
+					$res = array("success" => "Please Select Trip Start Time Between ".date('h:i A',strtotime($ids2['b_oo_valid_from_time']))." TO ".date('h:i A',strtotime($ids2['b_oo_valid_to_time'])));
+					echo json_encode($res);
+					exit();
+				}
+			}
+			
+			$this->db->where('id',$data['booking_id']);
+
+			$this->db->update('booking_list',$arraydata);
+
+		
+			
+			$response['success']="success";
+		}
+	
+		
+
+		
+
+		echo json_encode($response);
+
+		
+
+	}
+	*/
+
+	public function cancel_booking()
+
+	{
+
+		date_default_timezone_set('Asia/Kolkata');
+
+		
+
+		$this->load->model('General_data');
+
+		
+
+		if(isset($_POST['cancel_note'])){
+
+			$cancel_note= $_POST['cancel_note'];
+
+		}else{
+
+			$cancel_note= 'Canceled By Customer';
+
+		}
+
+		
+
+		
+
+		$cancel_booking = array(	'b_status'=>0,
+
+									'b_cancel_type'=>1,
+
+									'b_cancel_date_time'=>date('Y-m-d H:i:s'),
+
+									'b_cancel_note'=>$cancel_note
+
+									);
+
+									
+
+									
+
+		$this->General_data->update_data('booking_list',$this->input->post('booking_id'),$cancel_booking);
+
+		
+
+		$this->db->select('booking_list.*,package_type.package_type,package_type.package_sub_type,city_detail.c_name,payment_type.payment_name');
+
+		$this->db->from('booking_list');
+
+		$this->db->join('package_type','package_type.id=booking_list.b_type');
+
+		$this->db->join('city_detail','city_detail.id=booking_list.b_from_city');
+
+		$this->db->join('payment_type','payment_type.id=booking_list.b_payment_type');
+
+		$this->db->where('booking_list.id',$this->input->post('booking_id'));
+
+		$booking_details = $this->db->get()->row();
+
+			
+
+			
+
+		date_default_timezone_set('Asia/Kolkata');
+
+		
+
+		$pickup_dateTime = date($booking_details->b_from_date.' '.$booking_details->b_from_time);
+
+   		
+
+		$date1 = new DateTime($pickup_dateTime);
+
+		$date2 = new DateTime();
+
+ 	
+
+		$diff = $date2->diff($date1);
+
+ 
+
+		
+
+		$total_hours_difference = $diff->h + ($diff->d * 24); 
+
+		if($total_hours_difference <=24)
+
+		{
+
+			$refund_time = 'Within 48 Hours';
+
+			$advance_return = 0;
+
+		}
+
+		else
+
+		{
+
+			$refund_time = 'Before 48 Hours';
+
+			$advance_return = $booking_details->b_advance;
+
+		}
+
+		
+
+		
+
+		$message = "Dear ".$booking_details->b_p_name.", We regret to inform the cancellation of your booking ".$booking_details->b_id.". We'd have loved to serve you. Call Rashmi Cabs on +91 9974234111 for any help.";
+
+		
+
+		
+
+		$mobile_no=$booking_details->b_p_contact;
+
+		
+
+		
+
+		$this->Sms_email->send_sms($mobile_no,$message);
+
+		
+
+		$passenger_details=$this->db->get_where('passenger_list',array('id'=>$booking_details->b_p_id))->row();
+
+		
+
+		if($booking_details->b_self_travel_status != 1)
+
+		{
+
+			$mobile_no_2=$passenger_details->p_contact;
+
+			
+
+			$message_2 = "Dear ".$passenger_details->p_full_name.", We regret to inform the cancellation of your booking ".$booking_details->b_id.". We'd have loved to serve you. Call Rashmi Cabs on +91 9974234111 for any help.";
+
+		
+
+		
+
+			
+
+			$this->Sms_email->send_sms($mobile_no_2,$message_2);
+
+		}
+
+		
+
+		//send email
+
+		$to      = $passenger_details->p_email_id;
+
+		$subject = 'Rashmi Cabs';
+
+		
+
+		$data['booking_details']=$booking_details;
+
+		$data['passenger_details']=$passenger_details;
+
+		$data['message']='Thank you for booking with us Rashmi Cabs your Ref #'.$booking_details->b_id.' was cancelled '.$refund_time.', hence your refund amount is Rs.'.$advance_return.' and will be processed in 7 Business Days..';
+
+		
+
+ 		$message_mail = $this->load->view('mail_booking_cancel',$data,true);
+
+		
+
+		$this->Sms_email->send_email($to, $subject, $message_mail);
+
+		
+
+		
+
+		//to agent
+
+		
+
+		if(!empty($booking_details->b_agent_id)){
+
+		
+
+			//sms
+
+		
+
+			$agent_details=$this->db->get_where('agent_detail',array('id'=>$booking_details->b_agent_id))->row();
+
+			//echo $this->db->last_query();
+			if(!empty($agent_details))
+			{
+				$agent_mobile_no = $agent_details->a_contact_no1;
+
+				
+
+				//DEAR AGENT = CANCELLATION ALERT=CRN1234567 DUTY WITH RAHUL 9974586007=7:15 AM 2/2/18 HAS BEEN CANCELLED PLZ NOTE
+
+				
+
+				$agent_message = 'Dear '.$agent_details->a_full_name.', Cancellation alert = '.$booking_details->b_id.' duty with '.$booking_details->b_p_name.'  '.$booking_details->b_p_contact.' = '.date('jS M Y',strtotime($booking_details->b_from_date)).' has been cancelled plz note. Team Rashmi Cabs.';
+
+				
+
+				$this->Sms_email->send_sms($agent_mobile_no,$agent_message);	
+
+				
+
+				//send email
+
+				$to      = $agent_details->a_email_id;
+
+				$subject = 'Rashmi Cabs';
+
+				
+
+				$data['booking_details']=$booking_details;
+
+				$data['passenger_details']=$passenger_details;
+
+				$data['agent_details']=$agent_details;
+
+							
+
+				$message_mail = $this->load->view('mail_booking_cancel_agent',$data,true);
+
+				
+
+				$this->Sms_email->send_email($to, $subject, $message_mail);
+			}
+		
+
+		
+
+		}
+
+		
+
+		//to driver
+
+		if(!empty($booking_details->b_assign_driver_id)){
+
+		
+
+			//send sms
+
+			$driver_mobile_no = $booking_details->b_driver_contact;
+
+					
+
+			$driver_message = 'DEAR '.$booking_details->b_driver_name.', Cancellation alert = '.$booking_details->b_id.' duty with '.$booking_details->b_p_name.'  '.$booking_details->b_p_contact.' = '.date('jS M Y',strtotime($booking_details->b_from_date)).' has been cancelled plz note. Team Rashmi Cabs.';
+
+					
+
+			$this->Sms_email->send_sms($driver_mobile_no,$driver_message);	
+
+		}
+
+		
+
+		$response['success']="success";
+
+		
+
+		echo json_encode($response);
+
+			
+
+	}
+
+	
+
+	public function InvoiceMail()
+
+	{
+
+		//$id = 52;
+
+		   
+
+		//echo $id; exit;		   
+
+	
+
+		$id=$_POST['invoice_id'];
+
+		
+
+		   
+
+		$data['invoice'] = $this->db->get_where('invoice',array('id'=>$id))->row();
+
+		   
+
+		$rent_card_id = $this->db->get_where('booking_list',array('b_invoice_id'=>$id))->row()->b_rent_card_id;
+
+			
+
+		$data['rent_card'] = $this->db->get_where('rent_cards',array('id'=>$rent_card_id))->row();
+
+			
+
+		$booking_details = $this->db->get_where('booking_list',array('b_invoice_id'=>$id))->row();
+
+		   
+
+		if($booking_details->b_ac_non_ac==1)
+
+		{
+
+			$data['ac_non_ac'] =  ' AC';
+
+		}
+
+		else
+
+		{
+
+			$data['ac_non_ac'] =  ' NON AC';
+
+		}
+
+		
+
+		$data['booking_details'] = $this->db->get_where('booking_list',array('b_invoice_id'=>$id))->row();
+
+		$data['passenger_details']=$this->db->get_where('passenger_list',array('id'=>$data['booking_details']->b_p_id))->row();
+
+			
+
+		
+
+		if($data['invoice']->type=="LOCAL" || $data['invoice']->sub_type=="ONEWAY") {
+
+			$invoice_template=$this->load->view('invoice_view_local_pdf',$data,true);
+
+		}else if($data['invoice']->sub_type=="ONEWAY OFFER" || $data['invoice']->sub_type=="ROUNDTRIP" || $data['invoice']->sub_type=="MULTICITY") {
+
+			$invoice_template=$this->load->view('invoice_view_pdf',$data,true);
+
+		}
+
+		
+
+		//echo $invoice_template;
+
+			
+
+			
+
+		//generate pdf
+
+		if (!file_exists(BACKUP_DIR)) mkdir(BACKUP_DIR , 0755) ;
+
+        if (!is_writable(BACKUP_DIR)) chmod(BACKUP_DIR , 0755) ;
+
+			
+
+		$pdfFilePath = BACKUP_DIR."/invoice.pdf";
+
+	 
+
+		//load mPDF library
+
+		$this->load->library('m_pdf');
+
+	 
+
+		//generate the PDF from the given html
+
+		$this->m_pdf->pdf->WriteHTML($invoice_template);
+
+	 
+
+		//download it.
+
+		$this->m_pdf->pdf->Output($pdfFilePath, "F");  
+
+			
+
+					
+
+		$data['message']='Thank you for booking with us Rashmi Cabs your Ref #'.$data['booking_details']->b_id.' Hope you had a wonderful trip. <br> Please Check Attachment Invoice File';
+
+					
+
+		$body = $this->load->view('mail_booking_trip_complete',$data,true);
+
+		//echo $message_mail;exit;
+
+			
+
+			
+
+		$filename= "invoice.pdf";
+
+		$my_path = BACKUP_DIR . '/';
+
+				
+
+		$file = $my_path.$filename;
+
+		$file_size = filesize($file);
+
+		$handle = fopen($file, "r");
+
+		$content = fread($handle, $file_size);
+
+		fclose($handle);
+
+	
+
+		$content = chunk_split(base64_encode($content));
+
+		$uid = md5(uniqid(time()));
+
+		$name = basename($file);
+
+		$eol = PHP_EOL;
+
+		   
+
+			   
+
+		   
+
+		$to      = $data['passenger_details']->p_email_id;
+
+		$subject = 'Rashmi Cabs';
+
+				
+
+		$from_name = "Rashmi Cabs";
+
+		$from_mail = 'rashmicabs@gmail.com';
+
+		$replyto = "rashmicabs@gmail.com";
+
+			
+
+		// Basic headers
+
+		$header = "From: ".$from_name." <".$from_mail.">".$eol;
+
+		$header .= "Reply-To: ".$replyto.$eol;
+
+		$header .= "MIME-Version: 1.0\r\n";
+
+		$header .= "Content-Type: multipart/mixed; boundary=\"".$uid."\"";
+
+			
+
+		// Put everything else in $message
+
+		//$message = "--".$uid.$eol;
+
+		//$message .= "Content-Transfer-Encoding: 7bit".$eol.$eol;
+
+		$message .= "--".$uid.$eol;
+
+		$message .= "Content-Type: text/html; charset=ISO-8859-1".$eol;
+
+		$message .= "Content-Transfer-Encoding: 8bit".$eol.$eol;
+
+		$message .= $body.$eol;
+
+		$message .= "--".$uid.$eol;
+
+		$message .= "Content-Type: application/octet-stream; name=\"".$filename."\"".$eol;
+
+		$message .= "Content-Transfer-Encoding: base64".$eol;
+
+		$message .= "Content-Disposition: attachment".$eol.$eol;
+
+		$message .= $content.$eol;
+
+		$message .= "--".$uid."--";
+
+							
+
+		mail($to, $subject, $message, $header);
+
+		
+
+		$response['success']="success";
+
+		
+
+		echo json_encode($response);
+
+		
+
+	}
+
+	
+
+	public function slider_list(){
+
+		$slider = $this->db->get('slider')->result();
+
+		
+
+		$data=array();
+
+		$i=1;
+
+		$total=0;
+
+		foreach($slider as $i=> $row){
+
+			$data[$i]['id']=$row->id;
+
+			$data[$i]['image_name']=$row->s_cover_image;
+
+			$data[$i]['image_path']=base_url()."uploads/slider/cover_image/".$row->s_cover_image;
+
+			
+
+			//$total=$i;
+
+			
+
+			//$i++;
+
+		}
+
+		
+
+		$response=array('success'=>'success' ,'message'=>'Successfully Found Slider List','total'=>count($data), 'slider_list'=>$data);
+
+		
+
+		echo json_encode($response);
+
+	}
+
+	
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
